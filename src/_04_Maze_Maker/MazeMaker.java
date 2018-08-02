@@ -22,10 +22,11 @@ public class MazeMaker{
 		maze = new Maze(width, height);
 		
 		//4. select a random cell to start
-		
+		int row = randGen.nextInt(maze.getWidth());
+		int col = randGen.nextInt(maze.getHeight());
 		
 		//5. call selectNextPath method with the randomly selected cell
-		
+		selectNextPath(maze.getCell(row, col));
 		
 		return maze;
 	}
@@ -33,9 +34,28 @@ public class MazeMaker{
 	//6. Complete the selectNextPathMethod
 	private static void selectNextPath(Cell currentCell) {
 		//A. mark cell as visited
-
+		currentCell.hasBeenVisited();
 		//B. check for unvisited neighbors using the cell
-		
+		if (getUnvisitedNeighbors(currentCell) != null) {
+			int randomCell = randGen.nextInt(getUnvisitedNeighbors(currentCell).size());
+			ArrayList<Cell> cellList = new ArrayList<>();
+			Cell ranCell = cellList.get(randomCell);
+			uncheckedCells.push(ranCell);
+			if (randomCell == 0) {
+				currentCell.setWestWall(false);
+			}
+			else if (randomCell == 1) {
+				currentCell.setNorthWall(false);
+			}
+			else if (randomCell == 2) {
+				currentCell.setEastWall(false);
+			}
+			else if (randomCell == 3) {
+				currentCell.setSouthWall(false);
+			}
+			ranCell = currentCell;
+			currentCell.hasBeenVisited();
+		}
 		//C. if has unvisited neighbors,
 		
 			//C1. select one at random.
@@ -48,6 +68,12 @@ public class MazeMaker{
 			
 			
 		//D. if all neighbors are visited
+		if (getUnvisitedNeighbors(currentCell).isEmpty()) {
+			if (!uncheckedCells.isEmpty()) {
+				Cell newCell = uncheckedCells.pop();
+				currentCell = newCell;
+			}
+		}
 		
 			//D1. if the stack is not empty
 			
