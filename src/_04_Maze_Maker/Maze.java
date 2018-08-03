@@ -16,8 +16,8 @@ public class Maze {
 		cellArr = new Cell[width][height];
 		//3. Iterated through each cell and initialize it
 		//   using i and j as the location
-		for (int i = 0; i < cellArr[0].length; i++) {
-			for (int j = 0; j < cellArr[1].length; j++) {
+		for (int i = 0; i < cellArr.length; i++) {
+			for (int j = 0; j < cellArr[i].length; j++) {
 				cellArr[i][j] = new Cell(i, j);
 			}
 		}
@@ -26,8 +26,8 @@ public class Maze {
 
 	//4. This method iterates through the cells and draws them
 	public void draw(Graphics g) {
-		for (int i = 0; i < cellArr[0].length; i++) {
-			for (int j = 0; j < cellArr[1].length; j++) {
+		for (int i = 0; i < cellArr.length; i++) {
+			for (int j = 0; j < cellArr[i].length; j++) {
 				cellArr[i][j].draw(g);
 			}
 		}

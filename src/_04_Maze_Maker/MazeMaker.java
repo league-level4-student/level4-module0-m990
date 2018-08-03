@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
+import _03_Conways_Game_of_Life.WorldPanel;
+
 
 public class MazeMaker{
 	
@@ -33,26 +35,21 @@ public class MazeMaker{
 
 	//6. Complete the selectNextPathMethod
 	private static void selectNextPath(Cell currentCell) {
+		System.out.println("select next path");
+		System.out.println(currentCell.getX() + " " + currentCell.getY());
 		//A. mark cell as visited
-		currentCell.hasBeenVisited();
+		currentCell.setBeenVisited(true);
 		//B. check for unvisited neighbors using the cell
-		if (getUnvisitedNeighbors(currentCell) != null) {
+		System.out.println(getUnvisitedNeighbors(currentCell));
+		if (getUnvisitedNeighbors(currentCell) != null || getUnvisitedNeighbors(currentCell).size() != 0) {
+			//System.out.println(getUnvisitedNeighbors(currentCell));
+			System.out.println("not null");
 			int randomCell = randGen.nextInt(getUnvisitedNeighbors(currentCell).size());
-			ArrayList<Cell> cellList = new ArrayList<>();
-			Cell ranCell = cellList.get(randomCell);
+			Cell ranCell = getUnvisitedNeighbors(currentCell).get(randomCell);
 			uncheckedCells.push(ranCell);
-			if (randomCell == 0) {
-				currentCell.setWestWall(false);
-			}
-			else if (randomCell == 1) {
-				currentCell.setNorthWall(false);
-			}
-			else if (randomCell == 2) {
-				currentCell.setEastWall(false);
-			}
-			else if (randomCell == 3) {
-				currentCell.setSouthWall(false);
-			}
+			
+			removeWalls(currentCell, ranCell);
+			
 			ranCell = currentCell;
 			currentCell.hasBeenVisited();
 		}
@@ -68,7 +65,7 @@ public class MazeMaker{
 			
 			
 		//D. if all neighbors are visited
-		if (getUnvisitedNeighbors(currentCell).isEmpty()) {
+		if (getUnvisitedNeighbors(currentCell) != null) {
 			if (!uncheckedCells.isEmpty()) {
 				Cell newCell = uncheckedCells.pop();
 				currentCell = newCell;
@@ -89,13 +86,51 @@ public class MazeMaker{
 	//   This method will check if c1 and c2 are adjacent.
 	//   If they are, the walls between them are removed.
 	private static void removeWalls(Cell c1, Cell c2) {
-		
+		if (c1.getY() == c2.getY()) {
+			if (c1.getY() < c2.getY()) {
+				c1.setSouthWall(false);
+				c2.setNorthWall(false);
+			}
+			else {
+				c2.setNorthWall(false);
+				c1.setSouthWall(false);
+			}
+		}
+		else {
+			if (c1.getX() < c2.getX()) {
+				c1.setEastWall(false);
+				c2.setWestWall(true);
+			}
+			else {
+				c1.setWestWall(false);
+				c2.setEastWall(false);
+			}
+		}
 	}
 	
 	//8. Complete the getUnvisitedNeighbors method
 	//   Any unvisited neighbor of the passed in cell gets added
 	//   to the ArrayList
 	private static ArrayList<Cell> getUnvisitedNeighbors(Cell c) {
-		return null;
+		System.out.println("in get unvisited cells");
+		ArrayList<Cell> cellList = new ArrayList<>();
+		if (c.getX() != width-1 && !maze.getCell(c.getX()+1, c.getY()).hasBeenVisited()) {
+			cellList.add(maze.getCell(c.getX()+1, c.getY()));
+		}
+		if (c.getX() != 0 && !maze.getCell(c.getX()-1, c.getY()).hasBeenVisited()) {
+			cellList.add(maze.getCell(c.getX()-1, c.getY()));
+		}
+		if (c.getY() != height-1 && !maze.getCell(c.getX(), c.getY()+1).hasBeenVisited()) {
+			cellList.add(maze.getCell(c.getX(), c.getY()+1));
+		}
+		if (c.getY() != 0 && !maze.getCell(c.getX(), c.getY()-1).hasBeenVisited()) {
+			cellList.add(maze.getCell(c.getX(), c.getY()-1));
+		}
+		if (cellList.isEmpty()) {
+			System.out.println("returning null");
+			return null;
+		}
+		for (Cell c1: cellList) System.out.println(c1.getX() + " " + c1.getY());
+		return cellList;
 	}
 }
