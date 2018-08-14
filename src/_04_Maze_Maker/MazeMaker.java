@@ -32,35 +32,28 @@ public class MazeMaker{
 		
 		return maze;
 	}
-	private static boolean hasUnvisitedCells() {
-		for (int w = 0; w < maze.getWidth(); w++)  for (int h = 0; h < maze.getHeight(); h++)  if (!maze.getCell(w, h).hasBeenVisited()) return true;
-		
-		return false;
-	}
 
 	//6. Complete the selectNextPathMethod
 	private static void selectNextPath(Cell currentCell) {
 		System.out.println(currentCell.getX() + " " + currentCell.getY());
-		while (hasUnvisitedCells()) {
-			//System.out.println("select next path");
-			//System.out.println(currentCell.getX() + " " + currentCell.getY());
-			//A. mark cell as visited
-			currentCell.setBeenVisited(true);
-			//B. check for unvisited neighbors using the cell
-			ArrayList<Cell> neighbors = getUnvisitedNeighbors(currentCell);
-			//System.out.println(neighbors);
-			if (neighbors != null && neighbors.size() != 0) {
-				//System.out.println("not null");
-				int randomCell = randGen.nextInt(neighbors.size());
-				Cell ranCell = neighbors.get(randomCell);
-				uncheckedCells.push(currentCell);
-				removeWalls(currentCell, ranCell);
-				currentCell = ranCell;
-			} else if (!uncheckedCells.isEmpty()) {
-				System.out.println(currentCell.getX() + " " + currentCell.getY());
-				Cell newCell = uncheckedCells.pop();
-				currentCell = newCell;
-			}
+		//System.out.println("select next path");
+		//System.out.println(currentCell.getX() + " " + currentCell.getY());
+		//A. mark cell as visited
+		currentCell.setBeenVisited(true);
+		//B. check for unvisited neighbors using the cell
+		ArrayList<Cell> neighbors = getUnvisitedNeighbors(currentCell);
+		//System.out.println(neighbors);
+		if (neighbors != null && neighbors.size() != 0) {
+			//System.out.println("not null");
+			int randomCell = randGen.nextInt(neighbors.size());
+			Cell ranCell = neighbors.get(randomCell);
+			uncheckedCells.push(currentCell);
+			removeWalls(currentCell, ranCell);
+			selectNextPath(ranCell);
+		} else if (!uncheckedCells.isEmpty()) {
+			selectNextPath(uncheckedCells.pop());
+		}else {
+			System.out.println("Complete");
 		}
 
 		//C. if has unvisited neighbors,
@@ -89,24 +82,33 @@ public class MazeMaker{
 	//   If they are, the walls between them are removed.
 	private static void removeWalls(Cell c1, Cell c2) {
 		if (c1.getY() == c2.getY()) {
-			if (c1.getY() < c2.getY()) {
-				c1.setSouthWall(false);
-				c2.setNorthWall(false);
-			}
-			else {
-				c2.setNorthWall(false);
-				c1.setSouthWall(false);
-			}
-		}
-		else {
-			if (c1.getX() < c2.getX()) {
-				c1.setEastWall(false);
-				c2.setWestWall(true);
-			}
-			else {
+			if (c1.getX() > c2.getX()) {
 				c1.setWestWall(false);
 				c2.setEastWall(false);
 			}
+			else if (c1.getX() < c2.getX()) {
+				c1.setEastWall(false);
+				c2.setWestWall(false);
+			}
+			else {
+				System.out.println("error in x comparison");
+			}
+		}
+		else if (c1.getX() == c2.getX()) {
+			if (c1.getY() > c2.getY()) {
+				c1.setNorthWall(false);
+				c2.setSouthWall(false);
+			}
+			else if (c1.getY() < c2.getY()) {
+				c1.setSouthWall(false);
+				c2.setNorthWall(false);
+			}
+			else {
+				System.out.println("error in y comparison");
+			}
+		}
+		else {
+			System.out.println("try to remove walls between walls that are not the same");
 		}
 	}
 	
