@@ -17,7 +17,7 @@ public class Cell implements Drawable {
 		this.cellSize = size;
 	}
 
-	// 11. Complete tue liveOrDie method
+	// 11. Complete the liveOrDie method
 	// It sets isAlive to true or false based on the neighbors and
 	// the rules of the game
 	/*
@@ -50,11 +50,9 @@ public class Cell implements Drawable {
 	// It draws a colored square if cell is alive
 	// draws empty square if cell is dead
 	@Override
-	public void draw(Graphics g) {
-		//g.setColor(Color.gray);
+	public void draw(Graphics g) {		
 		if (isAlive) {
-			g.setColor(Color.blue);
-			//g.drawRect(getX(), getX(), cellSize, cellSize);
+			g.setColor(Color.blue);			
 			g.fillRect(getX(), getY(), cellSize, cellSize);
 		} else {
 			g.setColor(Color.gray);
